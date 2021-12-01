@@ -1,0 +1,24 @@
+{
+  "name": "warpcharm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomiclabs/hardhat-truffle5": "^2.0.2",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "hardhat": "^2.7.0",
+    "web3": "^1.6.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.4.0",
+    "@uniswap/v3-core": "^1.0.0",
+    "@uniswap/v3-periphery": "^1.3.0",
+    "dotenv": "^10.0.0"
+  }
+}
