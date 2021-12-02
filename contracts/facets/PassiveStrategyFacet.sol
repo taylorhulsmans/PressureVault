@@ -37,7 +37,7 @@ import {AppStorage, Modifiers} from '../libraries/LibAppStorage.sol';
  *          achieves this without the need to swap directly on Uniswap and pay
  *          fees.
  */
-contract PassiveStrategy is IStrategy, Modifiers {
+contract PassiveStrategyFacet is IStrategy, Modifiers {
   AppStorage internal s;
   /**
   * @notice Calculates new ranges for orders and calls `vault.rebalance()`

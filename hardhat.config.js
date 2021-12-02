@@ -8,6 +8,10 @@ module.exports = {
   solidity: "0.7.6",
   networks: {
     hardhat: {
+      forking: {
+        url: process.env.ALCHEMY_ENDPOINT,
+        blockNumber:  13722598
+      },
       chainId: 1337,
       mining: {
         auto: true,
