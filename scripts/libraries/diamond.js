@@ -15,7 +15,6 @@ async function deploy(account, artifact, args) {
     gas: 15000000,
     gasPrice: '182006987310'
   }).then((inst) => {
-      console.log('instance')
       instance = inst
   })
   return instance;
