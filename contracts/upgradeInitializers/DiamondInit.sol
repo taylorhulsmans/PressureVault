@@ -20,6 +20,8 @@ import { AppStorage } from '../libraries/LibAppStorage.sol';
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+import 'hardhat/console.sol';
+
 
 // It is exapected that this contract is customized if you want to deploy your diamond
 // with data from a deployment script. Use the init function to initialize state variables
@@ -75,6 +77,8 @@ contract DiamondInit {
 
     // AlphaVaultFacet
     s.pool  = IUniswapV3Pool(pool);
+    s.poolTest = pool;
+    console.log('init', pool);
     s.token0 = IERC20(IUniswapV3Pool(pool).token0());
     s.token1 = IERC20(IUniswapV3Pool(pool).token1());
     s.tickSpacing = IUniswapV3Pool(pool).tickSpacing();
@@ -91,10 +95,6 @@ contract DiamondInit {
     s.maxTwapDeviation = maxTwapDeviation;
     s.twapDuration = twapDuration;
     s.keeper = keeper;
-
-    
-
-
 
     
   }

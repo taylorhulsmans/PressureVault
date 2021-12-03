@@ -35,7 +35,9 @@ async function deployDiamond() {
 
   // Mock Pool
   const erc20A = await deploy(owner, MockERC20, ['name A', 'A', 18])
+  console.log('erc20A deployed:', erc20A._address)
   const erc20B = await deploy(owner, MockERC20, ['name B', 'B', 18])
+  console.log('erc20B deployed:', erc20B._address)
   
   for (const i in users) {
     await erc20A.methods.mint(users[i], web3.utils.toWei('10000', 'ether')).send({from: owner})
@@ -44,22 +46,21 @@ async function deployDiamond() {
 
   const uniTestRouter = await deploy(owner, TestRouter)
   const uniFactory = new web3.eth.Contract(IUniswapV3Factory.abi,'0x1F98431c8aD98523631AE4a59f267346ea31F984')
-
   const create = await uniFactory.methods.createPool(erc20A._address, erc20B._address, fee).send({from:owner})
 
   const token0Addr = create.events.PoolCreated.returnValues.token0
   const token1Addr  = create.events.PoolCreated.returnValues.token1
   const poolAddr = create.events.PoolCreated.returnValues.pool
+  console.log('pool created', poolAddr)
   
   const token0 = new web3.eth.Contract(MockERC20.abi, token0Addr)
   const token1 = new web3.eth.Contract(MockERC20.abi, token1Addr)
 
   const uniPool = new web3.eth.Contract(IUniswapV3Pool.abi, poolAddr)
-
+  console.log(uniPool._address, 'uniPool Addr')
   const price = encodePriceSqrt(1,1)
   
   const init = await uniPool.methods.initialize(price).send({from:owner})
-  
 
   for (const i in users) {
     await token0.methods.approve(uniTestRouter._address, web3.utils.toWei('100', 'ether')).send({from:users[i]})
@@ -112,9 +113,9 @@ async function deployDiamond() {
   console.log('Diamond Cut:', cut)
 
   const initArgs = [
-    '0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8', // address pool, (DAI-ETH 0.3%)
+    uniPool._address, // address pool, (DAI-ETH 0.3%)
     5000, // uint256 protocolFee,
-    fromExponential(2e17), // uint256 maxTotalSupply,
+    fromExponential(100e18), // uint256 maxTotalSupply,
     3600, // int24 baseThreshold,
     1200, // int24 limitThreshold,
     41400, // uint256 period,
@@ -136,7 +137,13 @@ async function deployDiamond() {
     fnCall
   ).send({from:owner})
 
-  return diamond._address
+  return {
+    'diamond': diamond._address,
+    'pool': uniPool._address,
+    'erc20A': erc20A._address,
+    'erc20B': erc20B._address,
+    'testRouter': uniTestRouter._address
+  }
 }
 
 if (require.main === module) {

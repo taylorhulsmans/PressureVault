@@ -18,7 +18,8 @@ struct AppStorage {
   uint8 wVDecimals;
 
   // Alpha Vault Facet
-  IUniswapV3Pool   pool;
+  IUniswapV3Pool pool;
+  address poolTest;
   IERC20   token0;
   IERC20   token1;
   int24   tickSpacing;

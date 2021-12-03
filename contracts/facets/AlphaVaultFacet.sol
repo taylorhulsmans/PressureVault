@@ -21,12 +21,12 @@ import  { AppStorage, Modifiers } from '../libraries/LibAppStorage.sol';
 
 import './ERC20Facet.sol';
 
+import 'hardhat/console.sol';
 
 contract AlphaVaultFacet is
   IVault,
   IUniswapV3MintCallback,
   IUniswapV3SwapCallback,
-  ReentrancyGuard,
   Modifiers
 {
 
@@ -68,7 +68,7 @@ contract AlphaVaultFacet is
   )
   external
   override
-  nonReentrant
+  //nonReentrant
   returns (
     uint256 shares,
     uint256 amount0,
@@ -95,6 +95,8 @@ contract AlphaVaultFacet is
     // Mint shares to recipient
     ERC20Facet(address(this)).mint(to, shares);
     emit Deposit(msg.sender, to, shares, amount0, amount1);
+    console.log(s.maxTotalSupply, 'max total supply');
+    console.log(ERC20Facet(address(this)).totalSupply());
     require(ERC20Facet(address(this)).totalSupply() <= s.maxTotalSupply, "s.maxTotalSupply");
   }
 
@@ -147,7 +149,7 @@ contract AlphaVaultFacet is
     uint256 amount0Min,
     uint256 amount1Min,
     address to
-  ) external override nonReentrant returns (uint256 amount0, uint256 amount1) {
+  ) external override /*nonReentrant*/ returns (uint256 amount0, uint256 amount1) {
     require(shares > 0, "shares");
     require(to != address(0) && to != address(this), "to");
     uint256 totalSupply = ERC20Facet(address(this)).totalSupply();
@@ -207,7 +209,7 @@ contract AlphaVaultFacet is
     int24 _bidUpper,
     int24 _askLower,
     int24 _askUpper
-  ) external nonReentrant {
+  ) external /*nonReentrant*/ {
     require(msg.sender == s.strategy, "s.s.strategy");
     _checkRange(_baseLower, _baseUpper);
     _checkRange(_bidLower, _bidUpper);
@@ -388,8 +390,11 @@ contract AlphaVaultFacet is
     uint128
   )
   {
+    console.log('tickLower', uint256(tickLower));
     bytes32 positionKey = PositionKey.compute(address(this), tickLower, tickUpper);
-    return s.pool.positions(positionKey);
+    console.log('poolTest', s.poolTest);
+    return IUniswapV3Pool(s.poolTest).positions(positionKey);
+    //return s.pool.positions(positionKey);
   }
 
   /// @dev Wrapper around `LiquidityAmounts.getAmountsForLiquidity()`.
